@@ -245,18 +245,13 @@
     #define _SIG_BYTE_2 0x96
     #define _SIG_BYTE_3 0x09
 
+    /* see avrdude configuration */
+    #define _AVR910_DEVCODE 0x74
 
     #if defined(_AVR_ATmega644__)
-
-    #define _ATMEGA644
-
-    /* see avrdude configuration */
-    #define _AVR910_DEVCODE 0x02
+	#define _ATMEGA644
     #else
- 
-    #define _ATMEGA644
-    /* see avrdude configuration */
-    #define _AVR910_DEVCODE 0x02
+    	#define _ATMEGA644P
     #endif
 
     /* }}} */
