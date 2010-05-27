@@ -63,6 +63,18 @@ else ifeq ($(MCU),atmega644)
 	# atmega644 with 512 words bootloader:
 	# bootloader section starts at 0x7e00 (word-address) == 0xfc00 (byte-address)
 	#BOOT_SECTION_START = 0xfc00
+else ifeq ($(MCU),atmega644p)
+        # atmega644p with 4096 words bootloader:
+        # bootloader section starts at 0x7000 (word-address) == 0xe000 (byte-address)
+        BOOT_SECTION_START = 0xe000
+    	#
+        # atmega644p with 1024 words bootloader:
+        # bootloader section starts at 0x7c00 (word-address) == 0xf800 (byte-address)
+        #BOOT_SECTION_START = 0xf800
+        #
+        # atmega644 with 512 words bootloader:
+        # bootloader section starts at 0x7e00 (word-address) == 0xfc00 (byte-address)
+        #BOOT_SECTION_START = 0xfc00
 else ifeq ($(MCU),atmega128)
 	# atmega128 with 1024 words bootloader:
 	# bootloader section starts at 0xfc00 (word-address) == 0x1f800 (byte-address)

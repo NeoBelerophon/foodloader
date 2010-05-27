@@ -217,9 +217,8 @@
     #define _AVR910_DEVCODE 0x75
 
     /* }}} */
-    #elif defined(__AVR_ATmega644__)
+    #elif defined(__AVR_ATmega644__) ||defined(__AVR_ATmega664p__)
     /* {{{ */
-    #define _ATMEGA644
 
     #define _TIMSK_TIMER1 TIMSK1
     #define _UDRIE_UART0 UDRIE0
@@ -246,8 +245,19 @@
     #define _SIG_BYTE_2 0x96
     #define _SIG_BYTE_3 0x09
 
+
+    #if defined(_AVR_ATmega644__)
+
+    #define _ATMEGA644
+
     /* see avrdude configuration */
     #define _AVR910_DEVCODE 0x02
+    #else
+ 
+    #define _ATMEGA644
+    /* see avrdude configuration */
+    #define _AVR910_DEVCODE 0x02
+    #endif
 
     /* }}} */
     #elif defined(__AVR_ATmega128__)
