@@ -217,7 +217,7 @@
     #define _AVR910_DEVCODE 0x75
 
     /* }}} */
-    #elif defined(__AVR_ATmega644__) ||defined(__AVR_ATmega664p__)
+    #elif defined(__AVR_ATmega644__) ||defined(__AVR_ATmega644P__)
     /* {{{ */
 
     #define _TIMSK_TIMER1 TIMSK1
