@@ -37,6 +37,11 @@
 #   include <avr/wdt.h>
 #endif
 
+#ifdef FLASHLED
+	#define LEDON FLASHLED_PORT |= FLASHLED_MASK;
+	#define LEDOFF  PORTB &= ~(FLASHLED_MASK);
+#endif
+
 FLASH_ADDR_T flash_address;             /* start flash (byte address, converted) write at this address */
 uint16_t eeprom_address;            /* start eerprom (byte address) write at this address */
 
@@ -55,7 +60,7 @@ void (*jump_to_application)(void) = (void *)0x0000;
 static noinline void uart_putc(uint8_t data)
 /*{{{*/ {
 
-    /* loop until data has been transmitted */
+	/* loop until data has been transmitted */
     while (!(_UCSRA_UART0 & _BV(_UDRE_UART0)));
 
     /* put data in buffer */
@@ -126,8 +131,10 @@ static inline void init_uart(void)
 static noinline void start_application(void)
 /* {{{ */ {
 
+#   ifdef BOOTLOADER_JUMPER
         /* reset input pin */
         BOOTLOADER_PORT &= BOOTLOADER_MASK;
+#	endif
 
         /* move interrupt vectors to application section and jump to main program */
         _IVREG = _BV(IVCE);
@@ -154,6 +161,12 @@ int main(void)
     /* BUF_T is defined in config.h, according the pagesize */
     BUF_T buffer_size;
 
+#	ifdef FLASHLED
+    //init LED
+    FLASHLED_DDR |= FLASHLED_MASK;
+#	endif
+
+
     init_uart();
 
     /* send boot message */
@@ -161,10 +174,11 @@ int main(void)
         uart_putc('b');
 #   endif
 
+#   ifdef BOOTLOADER_JUMPER
     /* configure pin as input and enable pullup */
     BOOTLOADER_DDR &= ~BOOTLOADER_MASK;
     BOOTLOADER_PORT |= BOOTLOADER_MASK;
-
+#	endif
     /* bootloader activation methods */
     if (
 #   ifdef BOOTLOADER_JUMPER
@@ -283,10 +297,8 @@ start_bootloader:
             case 'E':   /* exit bootloader */
 #endif
             case 'X':   /* start application */
-
+						uart_putc('\r');
                         start_application();
-                        uart_putc('\r');
-
                         break;
 
             case 'b':   /* check block support: return yes and 2 bytes block size we support */
@@ -337,6 +349,7 @@ start_bootloader:
                                  * address, but we are writing words! */
                                 temp_address += 2;
                             }
+
 
                             /* after filling the temp buffer, write the page and wait till we're done */
                             boot_page_write_safe(flash_address);
@@ -426,7 +439,17 @@ start_bootloader:
                         break;
 
                         /* }}} */
+            case 'x':
+						uart_getc();
+						LEDON
+						uart_putc('\r');
+						break;
 
+            case 'y':
+						uart_getc();
+						LEDOFF
+						uart_putc('\r');
+						break;
             /* NOT IMPLEMENTED: */
             /* {{{ */
             /* 'c': write program memory, low byte -- NOT IMPLEMENTED */

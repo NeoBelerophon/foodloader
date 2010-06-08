@@ -219,7 +219,6 @@
     /* }}} */
     #elif defined(__AVR_ATmega644__) ||defined(__AVR_ATmega644P__)
     /* {{{ */
-
     #define _TIMSK_TIMER1 TIMSK1
     #define _UDRIE_UART0 UDRIE0
     #define _TXEN_UART0 TXEN0
@@ -240,18 +239,21 @@
     #define _IVREG MCUCR
     #define _TIFR_TIMER1 TIFR1
 
-    /* see datasheet! */
-    #define _SIG_BYTE_1 0x1e
-    #define _SIG_BYTE_2 0x96
-    #define _SIG_BYTE_3 0x09
-
     /* see avrdude configuration */
     #define _AVR910_DEVCODE 0x74
 
-    #if defined(_AVR_ATmega644__)
-	#define _ATMEGA644
+    #if defined(__AVR_ATmega644__)
+		#define _ATMEGA644
+		/* see datasheet! */
+		#define _SIG_BYTE_1 0x1e
+		#define _SIG_BYTE_2 0x96
+		#define _SIG_BYTE_3 0x09
     #else
     	#define _ATMEGA644P
+		/* see datasheet! */
+		#define _SIG_BYTE_1 0x1e
+		#define _SIG_BYTE_2 0x96
+		#define _SIG_BYTE_3 0x0A
     #endif
 
     /* }}} */
@@ -329,7 +331,7 @@
 #define BOOTLOADER_MASK _BV(BOOTLOADER_PINNUM)
 
 /* 2) activation via char */
-//#define BOOTLOADER_CHAR
+#define BOOTLOADER_CHAR
 
 #ifndef BOOTLOADER_ENTRY_CHAR
 #define BOOTLOADER_ENTRY_CHAR 'p'
@@ -339,7 +341,28 @@
 #define BOOTLOADER_SUCCESS_CHAR 'S'
 #endif
 
+/* LED configuration for an LED connected to VCC an PIN X*/
 
+/* activate FLASH LED*/
+#define FLASHLED
+
+#ifndef FLASHLED_DDR
+#define FLASHLED_DDR DDRB
+#endif
+
+#ifndef FLASHLED_PORT
+#define FLASHLED_PORT PORTB
+#endif
+
+#ifndef FLASHLED_PIN
+#define FLASHLED_PIN PINB
+#endif
+
+#ifndef FLASHLED_PINNUM
+#define FLASHLED_PINNUM PINB3
+#endif
+
+#define FLASHLED_MASK _BV(FLASHLED_PINNUM)
 
 /* uart configuration */
 #define UART_BAUDRATE 115200
@@ -351,7 +374,7 @@
 #define BLOCKSIZE SPM_PAGESIZE
 
 /* by default, ignore the exit-bootloader command */
-#define EXIT_BOOTLOADER 0
+#define EXIT_BOOTLOADER 1
 
 /* use 8 or 16 bit counter, according to the page size of the target device */
 #if SPM_PAGESIZE < 256
